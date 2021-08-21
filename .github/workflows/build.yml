@@ -43,4 +43,3 @@ jobs:
         with:
           name: soundsense-rs-${{runner.os}}
           path: target/release/soundsense-rs.exe
-
