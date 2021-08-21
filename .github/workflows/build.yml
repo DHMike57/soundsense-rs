@@ -29,7 +29,7 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release --locked --verbose
+          args: --release  --verbose
       
       - name: Upload Built Binary
         if: runner.os != 'Windows'
