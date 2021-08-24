@@ -44,3 +44,12 @@ jobs:
           name: soundsense-rs-${{runner.os}}
           path: target/release/soundsense-rs.exe
 
+      - name: Release
+        uses: softprops/action-gh-release@vi
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          body: |
+            Build patched for linux only
+
+          files: |
+            soundsense-rs-${{runner.os}}
