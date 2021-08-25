@@ -32,15 +32,30 @@ jobs:
           args: --release  --verbose
       
       - name: Upload Built Binary
-        if: runner.os != 'Windows'
         uses: actions/upload-artifact@v1
         with:
           name: soundsense-rs-${{runner.os}}
           path: target/release/soundsense-rs
-      - name: Upload Built Binary
-        if: runner.os == 'Windows'
-        uses: actions/upload-artifact@v1
-        with:
-          name: soundsense-rs-${{runner.os}}
-          path: target/release/soundsense-rs.exe
 
+      - name: Version
+        if: startsWith(github.ref, 'refs/tags/')
+        id: version_id
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+        
+      - name: Package release
+        if: startsWith(github.ref, 'refs/tags/')
+        run: tar cjf soundsense-rs-linux-${{ steps.version_id.outputs.VERSION }}.tbz -C target/release/ soundsense-rs 
+
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          body: |
+            Build patched for linux only
+
+          files: |
+            soundsense-rs-linux-*.tbz
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
